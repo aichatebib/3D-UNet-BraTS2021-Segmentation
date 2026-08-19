@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# data
+*.nii
+*.nii.gz
+*.tar
+
+# model weights & checkpoints
+checkpoints/*.pth
+*.pth
+
+# outputs
+outputs/*.csv
+outputs/*.png
+outputs/*.pdf
+
+.env
+.venv/
