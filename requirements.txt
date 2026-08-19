@@ -1,0 +1,14 @@
+torch==2.8.0
+torchvision==0.23.0
+torchaudio==2.8.0
+monai==1.6.0
+nibabel==5.4.2
+SimpleITK==2.5.6
+scikit-learn==1.7.2
+scikit-image==0.25.2
+scipy==1.15.3
+numpy==2.2.6
+pandas==2.3.3
+matplotlib==3.10.9
+tqdm==4.70.0
+kagglehub==1.0.2
