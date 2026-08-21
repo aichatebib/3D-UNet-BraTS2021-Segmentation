@@ -65,6 +65,14 @@ Produces a qualitative FLAIR / ground-truth / prediction overlay and the
 Dice/HD95 scores for the specified test-set patient (`--patient-id` is
 1-indexed and required).
 
+`visualize.py` also defines `plot_per_patient_metric()`, which plots a
+per-patient Dice or HD95 curve (with mean/median lines) from the evaluation
+CSV. This function is not wired to a CLI flag — it must be called manually,
+e.g. from a Python shell:
+```python
+from visualize import plot_per_patient_metric
+plot_per_patient_metric("outputs/native_space_test.csv", metric="Patient_Dice")
+```
 ## Expected results
 | Region | DSC | HD95 (mm) |
 | --- | --- | --- |
