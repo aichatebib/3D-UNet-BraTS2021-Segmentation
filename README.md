@@ -1,4 +1,4 @@
-# Compact 3D U-Net for BraTS 2021 under a 6 GB Memory Budget
+# Compact 3D U-Net for Multi-Region Brain Tumor Segmentation on BraTS 2021 under a 6 GB Memory Budget
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22011395.svg)](https://doi.org/10.5281/zenodo.22011395)
 
@@ -29,29 +29,43 @@ training on a single 6 GB consumer-grade GPU for 20 epochs.
 ## Data
 This repository does **not** include the BraTS 2021 dataset. Access requires
 registration and acceptance of the official BraTS Data Usage Agreement.
-See: <lien vers la procédure d'accès officielle BraTS 2021>
+See the official BraTS 2021 data access and registration procedure:
+https://www.med.upenn.edu/cbica/brats2021/
 
 ## Reproducing
-<!-- Commandes, dans l'ordre, du prétraitement aux figures -->
+
+### 1. Download and extract the BraTS 2021 dataset
 ```bash
-# 1. Preprocessing (reorientation RAS, resampling to 128³, normalization,
-#    derivation of WT / TC / ET regions from native labels)
-<commande>
-
-# 2. Training (network definition, Dice loss, Adam, mixed precision,
-#    batch size 1, fixed random seed, 875 / 188 / 188 split)
-<commande>
-
-# 3. Native-space evaluation (DSC, HD95 in mm, empty-mask convention)
-<commande>
-
-# 4. Figures (Figures 3, 4, 5)
-<commande>
+python src/data_download.py
 ```
+Downloads and extracts the BraTS 2021 dataset via `kagglehub`.
+
+### 2. Train the 3D U-Net
+```bash
+python src/train.py
+```
+Batch size 1, 128³ input volumes, Dice loss, Adam optimizer, mixed-precision
+training (AMP). Preprocessing (reorientation, resampling, normalization,
+WT/TC/ET label derivation) is applied on the fly through `transforms.py` and
+`dataset.py` — there is no separate preprocessing script.
+
+### 3. Evaluate the trained model
+```bash
+python src/evaluate.py
+```
+Reprojects predictions to native BraTS resolution and computes DSC and HD95
+for WT, TC, and ET (`--split` can be set to `test`, `val`, `train`, or `all`;
+defaults to `test`).
+
+### 4. Generate visualizations
+```bash
+python src/visualize.py --patient-id <n>
+```
+Produces a qualitative FLAIR / ground-truth / prediction overlay and the
+Dice/HD95 scores for the specified test-set patient (`--patient-id` is
+1-indexed and required).
 
 ## Expected results
-<!-- Tableau des DSC et HD95 attendus, permettant à un relecteur de vérifier
-     les chiffres sans lire le code -->
 | Region | DSC | HD95 (mm) |
 | --- | --- | --- |
 | WT | 0.8813 ± 0.0739 | not individually reported (see Fig. 5B; median ≈2–4 mm range) |
@@ -63,7 +77,7 @@ See: <lien vers la procédure d'accès officielle BraTS 2021>
 
 ## Citation
 If you use this code, please cite both the article and the software:
-- Article: <référence complète après acceptation>
+- Article: The full article citation will be added after acceptance and publication.
 - Software: DOI 10.5281/zenodo.22011395
 
 ## License
