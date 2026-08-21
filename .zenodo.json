@@ -1,0 +1,18 @@
+{
+  "upload_type": "software",
+  "license": "MIT",
+  "access_right": "open",
+  "title": "Compact 3D U-Net for Multi-Region Brain Tumor Segmentation on BraTS 2021 under a 6 GB Memory Budget",
+  "description": "Compact 3D U-Net for automatic multi-region brain tumor segmentation (whole tumor, tumor core, enhancing tumor), trained and evaluated on the BraTS 2021 dataset (1251 multimodal MRI cases: T1, contrast-enhanced T1, T2, FLAIR) under a 6 GB consumer-grade GPU memory budget. Evaluated in native acquisition resolution on 188 independent test cases, the model achieves a mean Dice similarity coefficient of 0.8076 (95% CI 0.7890-0.8248) and a mean 95th-percentile Hausdorff distance of 9.04 mm (95% CI 6.19-12.95 mm), within about six to seven Dice points of datacenter-trained transformer models. This repository includes the preprocessing, training, and native-space evaluation scripts required to reproduce the reported results.",
+  "creators": [
+    {"name": "Tebib, Aicha", "affiliation": "Department of Physics, Faculty of Sciences, University of Skikda, Skikda, Algeria"}
+  ],
+  "keywords": [
+    "brain tumor segmentation",
+    "3D U-Net",
+    "BraTS 2021",
+    "low-resource computing",
+    "MRI",
+    "deep learning"
+  ]
+}
