@@ -1,6 +1,6 @@
 # Compact 3D U-Net for Multi-Region Brain Tumor Segmentation on BraTS 2021 under a 6 GB Memory Budget
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22011395.svg)](https://doi.org/10.5281/zenodo.22011395)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22047434.svg)](https://doi.org/10.5281/zenodo.22047434)
 
 ## Overview
 This repository provides the code for a compact 3D U-Net trained on the
@@ -78,7 +78,7 @@ Dice/HD95 scores for the specified test-set patient (`--patient-id` is
 ## Citation
 If you use this code, please cite both the article and the software:
 - Article: The full article citation will be added after acceptance and publication.
-- Software: DOI 10.5281/zenodo.22011395
+- Software: DOI 10.5281/zenodo.22047434
 
 ## License
 This project is licensed under the MIT License. See `LICENSE` for details.
