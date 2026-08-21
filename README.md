@@ -1,84 +1,70 @@
-# BraTS 2021 — 3D U-Net Brain Tumor Segmentation
+# Compact 3D U-Net for BraTS 2021 under a 6 GB Memory Budget
 
-3D multi-class brain tumor segmentation on the **BraTS 2021** dataset (Task 1)
-using a MONAI `UNet` (3D, 5 resolution levels) trained on the four MRI
-modalities (T1, T1ce, T2, FLAIR) to predict three overlapping tumor
-sub-regions: **Whole Tumor (WT)**, **Tumor Core (TC)**, and
-**Enhancing Tumor (ET)**.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22011395.svg)](https://doi.org/10.5281/zenodo.22011395)
 
-This repository was extracted and reorganized from an exploratory research
-notebook into a clean, runnable pipeline.
+## Overview
+This repository provides the code for a compact 3D U-Net trained on the
+BraTS 2021 dataset (1251 multimodal cases; T1, contrast-enhanced T1, T2,
+FLAIR) to jointly segment three tumor sub-regions (whole tumor, tumor core,
+enhancing tumor). Evaluated in native acquisition resolution on 188
+independent test cases, the model achieves a mean DSC of 0.8076 (95% CI
+0.7890–0.8248) and a mean HD95 of 9.04 mm (95% CI 6.19–12.95 mm), while
+training on a single 6 GB consumer-grade GPU for 20 epochs.
 
-## Pipeline overview
+## Hardware
+- GPU: NVIDIA GeForce RTX 3060 Laptop GPU (6 GB VRAM)
+- Peak GPU memory (training step): 836.00 MB (reserved) / 719.81 MB (allocated)
+- Epochs: 20
+- Training time: ≈ 9.12 h
+- Inference time: 164.77 ms/case
 
-1. **Download & extract** the BraTS 2021 dataset (via `kagglehub`).
-2. **Preprocess** each case: load 4 modalities + segmentation mask,
-   reorient to RAS, per-channel intensity normalization, resize to
-   `128×128×128`, and convert the label into 3 binary channels
-   (WT / TC / ET).
-3. **Train** a 3D U-Net with `DiceLoss`, Adam, and mixed precision (AMP),
-   saving the best checkpoint on validation loss (with resume support).
-4. **Evaluate** in *native space* (240×240×155): predictions are
-   upsampled back to the original resolution before computing
-   **Dice** and **95th-percentile Hausdorff Distance (HD95)** per region.
-5. **Visualize** predictions vs. ground truth overlaid on the FLAIR slice
-   with the largest predicted tumor area, and plot per-patient
-   Dice/HD95 curves.
+## Environment
+- Python 3.10
+- PyTorch 2.8.0
+- TorchVision 0.23.0
+- TorchAudio 2.8.0
+- MONAI 1.6.0
+- Other dependencies: see `requirements.txt` (NumPy, nibabel, SciPy, Matplotlib)
 
-## Repository structure
+## Data
+This repository does **not** include the BraTS 2021 dataset. Access requires
+registration and acceptance of the official BraTS Data Usage Agreement.
+See: <lien vers la procédure d'accès officielle BraTS 2021>
 
-```
-.
-├── requirements.txt
-├── src/
-│   ├── config.py          # paths & hyperparameters
-│   ├── data_download.py   # download + extract BraTS 2021 (kagglehub)
-│   ├── transforms.py      # MONAI transforms + label-to-multichannel conversion
-│   ├── dataset.py         # file listing, train/val/test split, DataLoaders
-│   ├── model.py            # 3D U-Net definition
-│   ├── train.py            # training loop with checkpoint/resume
-│   ├── evaluate.py         # native-space Dice / HD95 evaluation
-│   └── visualize.py        # qualitative + per-patient result plots
-├── checkpoints/             # saved model weights (created at runtime)
-└── outputs/                  # CSV results & figures (created at runtime)
-```
-
-## Setup
-
+## Reproducing
+<!-- Commandes, dans l'ordre, du prétraitement aux figures -->
 ```bash
-pip install -r requirements.txt
+# 1. Preprocessing (reorientation RAS, resampling to 128³, normalization,
+#    derivation of WT / TC / ET regions from native labels)
+<commande>
+
+# 2. Training (network definition, Dice loss, Adam, mixed precision,
+#    batch size 1, fixed random seed, 875 / 188 / 188 split)
+<commande>
+
+# 3. Native-space evaluation (DSC, HD95 in mm, empty-mask convention)
+<commande>
+
+# 4. Figures (Figures 3, 4, 5)
+<commande>
 ```
 
-## Usage
+## Expected results
+<!-- Tableau des DSC et HD95 attendus, permettant à un relecteur de vérifier
+     les chiffres sans lire le code -->
+| Region | DSC | HD95 (mm) |
+| --- | --- | --- |
+| WT | 0.8813 ± 0.0739 | not individually reported (see Fig. 5B; median ≈2–4 mm range) |
+| TC | 0.8014 ± 0.2077 | not individually reported (see Fig. 5B; median ≈2–4 mm range) |
+| ET | 0.7401 ± 0.1759 | not individually reported (see Fig. 5B; median ≈2–4 mm range) |
+| **Mean (overall, per-patient)** | **0.8076 (95% CI 0.7890–0.8248), median 0.8504** | **9.04 mm (95% CI 6.19–12.95), median 3.59 mm (IQR 2.54–7.72)** |
 
-```bash
-# 1. Download the dataset (requires a Kaggle account/API token)
-python src/data_download.py
-
-# 2. Train the model
-python src/train.py
-
-# 3. Evaluate on the test set (native-space Dice / HD95)
-python src/evaluate.py
-
-# 4. Visualize a specific patient's result
-python src/visualize.py --patient-id 27
-```
-
-## Notes
-
-- Update `RAW_DATASET_PATH` in `src/config.py` to point to your local
-  extracted BraTS 2021 folder.
-- Training defaults to `batch_size=1`, `128³` volumes, and AMP — tune
-  `src/config.py` for your GPU memory budget.
-- The label convention follows the standard BraTS mapping:
-  `1` = necrotic/non-enhancing tumor core, `2` = peritumoral edema,
-  `4` = enhancing tumor. These are combined into WT / TC / ET as:
-  - WT = `{1, 2, 4}`
-  - TC = `{1, 4}`
-  - ET = `{4}`
+*HD95 penalty (373.13 mm, native-space image diagonal) applied to 1 TC case and 3 ET cases; no WT case penalized.*
 
 ## Citation
+If you use this code, please cite both the article and the software:
+- Article: <référence complète après acceptation>
+- Software: DOI 10.5281/zenodo.22011395
 
-If you use the BraTS 2021 dataset, please cite the official BraTS
-challenge papers as instructed on the [official BraTS site](http://braintumorsegmentation.org/).
+## License
+This project is licensed under the MIT License. See `LICENSE` for details.
