@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "3D-UNet-BraTS2021-Segmentation: Multi-Region Brain Tumor Segmentation Using a Compact 3D U-Net on the BraTS 2021 Dataset Under a 6 GB Memory Budget"
+version: "1.0.0"
+date-released: "2026-08-19"
+doi: "10.5281/zenodo.22011396"
+repository-code: "https://github.com/aichatebib/3D-UNet-BraTS2021-Segmentation"
+license: MIT
+authors:
+  - family-names: "Tebib"
+    given-names: "Aicha"
+    affiliation: "Department of Physics, Faculty of Sciences, University of Skikda, Algeria"
+  - family-names: "Boukedjane"
+    given-names: "Mouloud"
+    affiliation: "Department of Physics, Faculty of Sciences, University of Skikda, Algeria"
+  - family-names: "Cheikh"
+    given-names: "Ramdane"
+    affiliation: "Department of Computer Science, Faculty of Sciences, University of Skikda, Algeria"
